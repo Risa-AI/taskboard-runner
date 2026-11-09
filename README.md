@@ -21,6 +21,39 @@ server, against your own services, and sends back only masked results.
 It runs beside your secrets. You can read exactly what it does, reproduce a
 failed run on your own machine, and report or fix a bug where you found it.
 
+## Install
+
+Every release tag publishes a container image and Linux binaries (amd64 and
+arm64). Neither needs an account.
+
+```sh
+docker pull ghcr.io/risa-ai/taskboard-runner:<version>
+```
+
+Or download `taskboard-runner_<version>_linux_<arch>` and `SHA256SUMS` from the
+release page, then check the download:
+
+```sh
+sha256sum --ignore-missing -c SHA256SUMS
+```
+
+## Build from source
+
+```sh
+go build -o taskboard-runner ./cmd/taskboard-runner
+./taskboard-runner version
+```
+
+## Development
+
+```sh
+go vet ./...
+gofmt -l .
+go test ./...
+```
+
+CI runs the same three on every pull request.
+
 ## Security
 
 Report anything that could leak a secret privately, through this

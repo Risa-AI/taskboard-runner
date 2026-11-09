@@ -1,0 +1,34 @@
+name: Bug report
+description: Report a problem with the runner. Never paste a secret.
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Never paste a secret, a fleet token or a line of the environment file.**
+        A problem that could leak one goes to the Security tab, not here.
+  - type: input
+    id: version
+    attributes:
+      label: Runner version
+      description: The output of `taskboard-runner version`.
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened, and what you expected
+    validations:
+      required: true
+  - type: textarea
+    id: masked-report
+    attributes:
+      label: The masked report
+      description: Paste the masked report. Check it for secrets before pasting.
+      render: text
+  - type: checkboxes
+    id: no-secrets
+    attributes:
+      label: Confirmation
+      options:
+        - label: Nothing I pasted contains a secret, a fleet token or a value from my environment file.
+          required: true

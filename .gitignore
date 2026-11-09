@@ -31,3 +31,7 @@ go.work.sum
 # Editor/IDE
 # .idea/
 # .vscode/
+
+# The runner binary built at the root, and release builds
+/taskboard-runner
+/dist/
