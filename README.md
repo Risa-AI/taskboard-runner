@@ -16,6 +16,8 @@ server, against your own services, and sends back only masked results.
 4. The runner claims a run, calls your API, masks your secrets in everything
    it saw, and reports each case back.
 
+Every call the runner makes is described in [docs/protocol.md](docs/protocol.md).
+
 ## Why it is open source
 
 It runs beside your secrets. You can read exactly what it does, reproduce a
