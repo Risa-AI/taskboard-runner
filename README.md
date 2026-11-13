@@ -44,6 +44,49 @@ go build -o taskboard-runner ./cmd/taskboard-runner
 ./taskboard-runner version
 ```
 
+## Check and run a suite on your machine
+
+These commands send nothing to taskboard.
+
+Keep the secrets in an environments file, one entry per taskboard
+environment, readable only by you (`chmod 600`):
+
+```yaml
+staging:                                           # the environment's name in taskboard
+  admin_password: { env: STAGING_ADMIN_PASSWORD }  # from this machine's environment
+  api_key:        { file: /run/secrets/staging_api_key }
+  webhook_secret: "inline value"
+```
+
+The runner reads it from `--environments FILE`, else `$TB_ENVIRONMENTS`, else
+`/etc/tb/environments.yaml`. A relative `file:` path is relative to the
+environments file.
+
+```sh
+taskboard-runner validate --suite ./suite --seeds seeds.yaml --vars vars.yaml --env staging
+taskboard-runner test --suite ./suite --seeds seeds.yaml --vars vars.yaml --env staging \
+  --base-url https://staging.example.com
+```
+
+- `validate` checks the suite without sending a request. It prints each
+  problem as `file:line: message` and exits 1 if there is any. With `--env`
+  it needs the secrets' names only, not their values.
+- `test` runs the suite and prints each case, then the summary. It exits 0
+  when the run passed, 1 when a case failed, and 2 when no case ran. A secret
+  that is unset or empty stops the run before the first request.
+- `vars.yaml` holds the environment's plain variables (`name: value`) and
+  `seeds.yaml` the suite's seeds. A name is a seed, a variable or a secret,
+  never two.
+- A form upload (`@path`) is read from the suite directory, or from
+  `--fixtures DIR`.
+
+Before anything is printed, the runner masks the environment's secrets, every
+token a case captured under a name ending in `_token`, credential headers,
+and the value of any JSON field named for a credential, such as
+`refresh_token`. It cannot mask JSON inside a string value, a failure's
+reason quoting an asserted field, or a token in a query string or a form
+body, so capture tokens under names ending in `_token`.
+
 ## Development
 
 ```sh
