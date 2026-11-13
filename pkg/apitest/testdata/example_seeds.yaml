@@ -1,0 +1,37 @@
+# A booking app's end-to-end seeds, which its Go test code computed, written
+# as data. The admin logins it read from the environment are target
+# variables, not seeds.
+#
+# The instants (now, booking, voucherSlot, loyaltyDay) are seeds too, so every
+# value derived from one shares it: bookingDate and bookingTime from the same
+# `booking`, or at 23:00 "+2h" splits into today's date and tomorrow's 01:00.
+rand:             { random: base36 }
+phoneSuffix:      { digits: 8 }
+ownerPhone:       { template: "0812${phoneSuffix}" }
+ownerPhoneE164:   { template: "+62812${phoneSuffix}" }
+staffPhone:       { template: "0813${phoneSuffix}" }
+customerPhone:    { template: "0814${phoneSuffix}" }
+
+now:              { time: Asia/Jakarta }
+dateNow:          { from: now, format: "2006-01-02" }
+booking:          { from: now, offset: 2h }
+bookingDate:      { from: booking, format: "2006-01-02" }
+bookingTime:      { from: booking, format: "15:04" }
+dateTomorrow:     { from: now, days: 1, format: "2006-01-02" }
+
+voucherSlot:      { from: now, at: "10:00", days: 3 }
+voucherSlotDate:  { from: voucherSlot, format: "2006-01-02" }
+voucherSlotTime:  { from: voucherSlot, format: "15:04" }
+voucherSlotDow:   { from: voucherSlot, weekday: true, number: true }
+voucherNowDow:    { from: now, weekday: true, number: true }
+voucherStartDate: { from: now, days: -1, format: "2006-01-02" }
+voucherEndDate:   { from: now, days: 30, format: "2006-01-02" }
+
+loyaltyDay:       { from: now, at: "00:00", days: 5 }
+loyaltyDate:      { from: loyaltyDay, format: "2006-01-02" }
+loyaltyTime1:     { value: "09:00" }
+loyaltyTime2:     { value: "11:00" }
+loyaltyTime3:     { value: "13:00" }
+loyaltyTime4:     { value: "15:00" }
+loyaltyTime5:     { value: "17:00" }
+loyaltyTime6:     { value: "16:00" }
