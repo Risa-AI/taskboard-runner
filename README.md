@@ -39,6 +39,37 @@ release page, then check the download:
 sha256sum --ignore-missing -c SHA256SUMS
 ```
 
+## Run it
+
+Register a fleet in taskboard, then start the runner on the server beside
+your services. Keep the environments file readable only by you (`chmod 600`)
+and run the container as yourself, so it can read the file:
+
+```sh
+docker run -d --name taskboard-runner --restart unless-stopped \
+  --user "$(id -u):$(id -g)" \
+  -e TB_URL=https://taskboard.example.com \
+  -e TB_FLEET_TOKEN=<the fleet's token> \
+  -v "$PWD/environments.yaml:/etc/tb/environments.yaml:ro" \
+  ghcr.io/risa-ai/taskboard-runner:<version>
+```
+
+With the binary: `TB_URL=... TB_FLEET_TOKEN=... taskboard-runner run --environments ./environments.yaml`.
+
+- `TB_URL`: taskboard's address, over HTTPS (plain HTTP only to this host).
+- `TB_FLEET_TOKEN`: the token taskboard showed once when the fleet was
+  registered.
+- `TB_SLOTS`: how many runs at once; 1 if unset.
+- `--environments FILE`, else `$TB_ENVIRONMENTS`, else
+  `/etc/tb/environments.yaml`: the environments file, in the format below.
+
+The runner tells taskboard which secrets it holds (names only), heartbeats
+every 30 seconds, and takes a run whenever a slot is free. It reads the
+file again for every run, and tells taskboard again when the names in it
+change. A secret a run needs that the file lacks, or leaves empty, fails
+that run before any request, naming the secret. Stop the runner with Ctrl-C
+or `docker stop`; a run in progress is reported as stopped.
+
 ## Build from source
 
 ```sh

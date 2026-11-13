@@ -11,3 +11,5 @@ FROM gcr.io/distroless/static-debian12:nonroot
 COPY --from=build /out/taskboard-runner /taskboard-runner
 USER nonroot:nonroot
 ENTRYPOINT ["/taskboard-runner"]
+# With no arguments the image is a fleet; `test` and `validate` replace this.
+CMD ["run"]

@@ -1,6 +1,6 @@
 // Command taskboard-runner runs taskboard Test Maker suites beside your own
-// services. This version checks and runs a suite from disk; the fleet loop
-// that takes runs from taskboard comes later.
+// services: `run` takes runs from taskboard as a fleet, and `validate` and
+// `test` check and run a suite from disk.
 package main
 
 import (
@@ -22,6 +22,7 @@ func main() {
 
 const usage = `usage:
   taskboard-runner version
+  taskboard-runner run [--environments FILE]    (TB_URL, TB_FLEET_TOKEN, TB_SLOTS)
   taskboard-runner validate --suite DIR [--seeds FILE] [--vars FILE] [--env NAME] [--environments FILE]
   taskboard-runner test --suite DIR --env NAME --base-url URL [--seeds FILE] [--vars FILE] [--fixtures DIR] [--environments FILE]`
 
@@ -36,6 +37,8 @@ func run(args []string, stdout, stderr io.Writer) int {
 			return validate(args[1:], stdout, stderr)
 		case "test":
 			return testSuite(args[1:], stdout, stderr)
+		case "run":
+			return runFleet(args[1:], stderr)
 		}
 	}
 	fmt.Fprintln(stderr, usage)
